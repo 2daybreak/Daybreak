@@ -68,6 +68,7 @@ abstract class ParametricCurve: Parametric {
      */
     protected abstract fun closestPoint(v: Vector3): Vector3
 
+
     override fun draw(g: Graphics2D) {
         val c = this
         val size = 10.0

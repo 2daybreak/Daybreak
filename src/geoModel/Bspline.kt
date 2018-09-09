@@ -122,6 +122,7 @@ open class Bspline: ParametricCurve {
             val del = p[i] - p[i - 1]
             prm.add(prm[i - 1] + del.length / sum)
         }
+        prm[n - 1] = 1.0 //last prm to be 1.0 instead of 0.99999
     }
 
     protected open fun evalKnots() {
@@ -129,11 +130,11 @@ open class Bspline: ParametricCurve {
         for (i in 1..order) knots.add(0.toDouble())
         for (i in 1..order) knots.add(1.toDouble())
         for (i in 1..prm.size - order) {
-            var interval = 0.0
+            var sum = 0.0
             //averaging spacing(reflecting the distribution of prm)
-            for (j in i until i + degree) interval += prm[j]
-            interval /= degree
-            knots.add(degree + i, interval)
+            for (j in i until i + degree) sum += prm[j]
+            sum /= degree
+            knots.add(degree + i, sum)
         }
     }
 
