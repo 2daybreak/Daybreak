@@ -55,11 +55,13 @@ class DrawingPanel: JPanel() {
                     }
                     MouseEvent.BUTTON3 -> {
                         pop.slope.isEnabled = false
+                        pop.del.isEnabled = false
                         if(!curve.isEmpty()) {
                             val c = curve[ing]
                             for (t in c.prm) {
                                 if (Point3(size, c(t)).contains(e.x, e.y)) {
                                     pop.slope.isEnabled = true
+                                    pop.del.isEnabled = true
                                     oldIndex = c.prm.indexOf(t)
                                     break
                                 }
@@ -156,6 +158,7 @@ class DrawingPanel: JPanel() {
                                 point.add(v)
                                 repaint()
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -171,6 +174,14 @@ class DrawingPanel: JPanel() {
             mode = Mode.Slope
         }
 
+        pop.del.addActionListener{e: ActionEvent ->
+            println("Popup menu item '${e.actionCommand}' was pressed.")
+            val c = curve[ing]
+            c.removePts(oldIndex)
+            repaint()
+            mode = Mode.Curve
+        }
+        
         table.background = Color(50, 50, 50)
         table.foreground = Color.lightGray
         tableModel.addTableModelListener { e: TableModelEvent ->
