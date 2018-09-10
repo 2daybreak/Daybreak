@@ -91,8 +91,8 @@ class InterpolatedBspline: Bspline {
             val ipm = degree -2 + i
             when(isl.contains(ipm)) {
                 true -> {
-                    knots.add(0.5 * sum + 0.5 * prm[ipm - 1])
-                    knots.add(0.5 * sum + 0.5 * prm[ipm + 1])
+                    knots.add(0.67 * sum + 0.33 * prm[ipm - 1])
+                    knots.add(0.67 * sum + 0.33 * prm[ipm + 1])
                 }
                 false -> 
                     knots.add(sum)
@@ -100,8 +100,8 @@ class InterpolatedBspline: Bspline {
         }
         for(i in slp.indices) {
             when(isl[i]) {
-                0 -> knots.add(0.6 * prm[0] + 0.4 * prm[1])
-                nm1 -> knots.add(0.4 * prm[nm1 -1] + 0.6 * prm[nm1])
+                0 -> knots.add(0.5 * prm[0] + 0.5 * prm[1])
+                nm1 -> knots.add(0.5 * prm[nm1] + 0.5 * prm[nm1 -1])
                 in 1..degree - 2 -> knots.add(prm[isl[i]])
                 in nm1 - 1..nm1 - degree +2 -> knots.add(prm[isl[i]])
             }
