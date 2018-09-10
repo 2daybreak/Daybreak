@@ -82,68 +82,31 @@ class InterpolatedBspline: Bspline {
         knots.clear()
         val n = pts.size
         val nm1 = n - 1
-        val imin = when(isl.contains(0)) {
-            true -> 0
-            false -> 1
-        }
-        val imax = when(isl.contains(nm1)) {
-            true -> n - degree
-            false -> nm1 - degree
-        }
-        for (i in 1..order) knots.add(0.toDouble())
-        for (i in 1..order) knots.add(1.toDouble())
-        var r = 0
-        for (i in imin..imax) {
-            var sum = 0.0
-            r += 1
-            //averaging spacing(reflecting the distribution of prm)
-            for (j in i until i + degree) sum += prm[j]
+        for (i in 1..order) knots.add(0.0)
+        for (i in 1..order) knots.add(1.0)
+        for (i in 1..pts.size - order) {
+            var sum =0.0
+            for(j in i until i + degree) sum += prm[j]
             sum /= degree
-            knots.add(sum)
-            knots.sort()
-        }
-        r += 1 // r= imax - imin + 2
-        val c = mutableListOf<Double>()
-        for(i in degree until degree + r) {
-            c.add(knots[i])
-            for (p in prm) if (p > knots[i] && p < knots[i + 1]) c.add(p)
-            c.add(knots[i + 1])
-            println("c= $c")
-            for(j in 0 until c.size - 2) if(isl.contains(j + 1)) {
-                val ave = (c[j] + c[j+1] + c[j+2]) / 3
-                knots.add(ave)
+            val ipm = degree -2 + i
+            when(isl.contains(ipm)) {
+                true -> {
+                    knots.add(0.5 * sum + 0.5 * prm[ipm - 1])
+                    knots.add(0.5 * sum + 0.5 * prm[ipm + 1])
+                }
+                false -> 
+                    knots.add(sum)
             }
         }
-
-/*        knots.sort()
-        super.evalKnots()
-        for (i in slp.indices) {
-            val span = findIndexSpan(pts.size + i, prm[isl[i]])
+        for(i in slp.indices) {
             when(isl[i]) {
-                0 -> {
-                    val t = 0.5 * (prm[isl[i]] + prm[isl[i] + 1])
-                    knots.add(span + 1, t)
-                }
-                pts.size - 1-> {
-                    val t = 0.5 * (prm[isl[i]] + prm[isl[i] - 1])
-                    knots.add(span + 1, t)
-                }
-                else -> {
-                    if(prm.size > order) {
-                        val t1 = (2 * prm[isl[i]] + prm[isl[i] + 1]) / degree //0.5 * (prm[isl[i] -1] + prm[isl[i]])
-                        knots.add(t1)
-                        knots.sort()
-                        val t2 = (prm[isl[i]] + 2 * prm[isl[i] + 1]) / degree //0.5 * (prm[isl[i]] + prm[isl[i] + 1])
-                        knots[span + 1] = t2
-                    }
-                    else {
-                        knots.add(prm[isl[i]])
-                        knots.sort()
-                    }
-                }
+                0 -> knots.add(0.6 * prm[0] + 0.4 * prm[1])
+                nm1 -> knots.add(0.4 * prm[nm1 -1] + 0.6 * prm[nm1])
+                in 1..degree - 2 -> knots.add(prm[isl[i]])
+                in nm1 - 1..nm1 - degree +2 -> knots.add(prm[isl[i]])
             }
-        }*/
-
+        }
+        knots.sort()
         println("prm= $prm")
         println("knots= $knots")
     }
