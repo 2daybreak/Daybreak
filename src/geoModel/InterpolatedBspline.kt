@@ -46,6 +46,11 @@ class InterpolatedBspline: Bspline {
 
     override fun removePts(i: Int) {
         if (i != -1) pts.removeAt(i)
+        if (isl.contains(i)) {
+            val j = isl.indexOf(i)
+            isl.removeAt(j)
+            slp.removeAt(j)
+        }
         if (!pts.isEmpty()) {
             properties(pts); evalCtrlPoints()
         }
