@@ -1,22 +1,43 @@
 package linearAlgebra
 
-class Matrix3(val m: Array<DoubleArray>) {
+import kotlin.math.cos
+import kotlin.math.sin
 
-        /*val m00: Double, val m01: Double, val m02: Double,
-              val m10: Double, val m11: Double, val m12: Double,
-              val m20: Double, val m21: Double, val m22: Double) { */
+class Matrix3(val m: Array<DoubleArray>) {
 
     operator fun get(rowIndex: Int, columnIndex: Int): Double {
         return m[rowIndex][columnIndex]
     }
 
     constructor():
-            this(Array(3) { DoubleArray(3) })
+    this(arrayOf(doubleArrayOf(0.0, 0.0, 0.0),
+                 doubleArrayOf(0.0, 0.0, 0.0),
+                 doubleArrayOf(0.0, 0.0, 0.0)))
 
     constructor(u: Vector3, v: Vector3, w: Vector3):
             this(arrayOf(doubleArrayOf(u.x, u.y, u.z),
                          doubleArrayOf(v.x, v.y, v.z),
                          doubleArrayOf(w.x, w.y, w.z)))
+
+    /**
+     * 3-dimensional rotation matrix from axis and angle
+     *
+     * @param u a vector unchanged by the rotation
+     * @param theta counterclockwise angle of rotation
+     * @return the point on a curve
+     */
+    constructor(axis: Vector3, theta: Double) : this() {
+        val u = axis.normalize()
+        m[0][0] = cos(theta) + u.x * u.x * (1.0 - cos(theta))
+        m[0][1] = u.x * u.y * (1.0 - cos(theta)) - u.z * sin(theta)
+        m[0][2] = u.x * u.z * (1.0 - cos(theta)) - u.y * sin(theta)
+        m[1][0] = m[0][1]
+        m[1][1] = cos(theta) + u.y * u.y * (1.0 - cos(theta))
+        m[1][2] = u.y * u.z * (1.0 - cos(theta)) - u.x * sin(theta)
+        m[2][0] = m[0][2]
+        m[2][1] = m[1][2]
+        m[2][2] = cos(theta) + u.z * u.z * (1.0 - cos(theta))
+    }
 
     val zero get()= Matrix3(Vector3().zero, Vector3().zero, Vector3().zero)
 

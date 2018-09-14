@@ -9,6 +9,7 @@ class InterpolatedBspline: Bspline {
     private val slp = mutableListOf<Vector3>()
     private val isl = mutableListOf<Int>()
     private var chord = 0.0
+    var alpha = 1.0
 
     constructor() : this(3)
 
@@ -26,7 +27,7 @@ class InterpolatedBspline: Bspline {
             val del = p[i] - p[i - 1]
             sum += del.length
         }
-        chord = sum
+        chord = sum * alpha
     }
 
     override fun addPts(v: Vector3) {
@@ -46,11 +47,6 @@ class InterpolatedBspline: Bspline {
 
     override fun removePts(i: Int) {
         if (i != -1) pts.removeAt(i)
-        if (isl.contains(i)) {
-            val j = isl.indexOf(i)
-            isl.removeAt(j)
-            slp.removeAt(j)
-        }
         if (!pts.isEmpty()) {
             properties(pts); evalCtrlPoints()
         }
@@ -89,26 +85,34 @@ class InterpolatedBspline: Bspline {
         val nm1 = n - 1
         for (i in 1..order) knots.add(0.0)
         for (i in 1..order) knots.add(1.0)
-        for (i in 1..pts.size - order) {
-            var sum =0.0
-            for(j in i until i + degree) sum += prm[j]
+        for (i in 1..pts.size -order) {
+            var sum = 0.0
+            //averaging spacing(reflecting the distribution of prm)
+            for (j in i until i + degree) sum += prm[j]
             sum /= degree
-            val ipm = degree -2 + i
+            val ipm = degree - 2 + i
             when(isl.contains(ipm)) {
                 true -> {
                     knots.add(0.67 * sum + 0.33 * prm[ipm - 1])
                     knots.add(0.67 * sum + 0.33 * prm[ipm + 1])
                 }
-                false -> 
+                false ->
                     knots.add(sum)
             }
         }
-        for(i in slp.indices) {
-            when(isl[i]) {
-                0 -> knots.add(0.5 * prm[0] + 0.5 * prm[1])
-                nm1 -> knots.add(0.5 * prm[nm1] + 0.5 * prm[nm1 -1])
-                in 1..degree - 2 -> knots.add(prm[isl[i]])
-                in nm1 - 1..nm1 - degree +2 -> knots.add(prm[isl[i]])
+        for (i in slp.indices) {
+            val index = isl[i]
+            when (index) {
+                0 -> {
+                    val t = 0.5 * (prm[0] + prm[1])
+                    knots.add(t)
+                }
+                nm1 -> {
+                    val t = 0.5 * (prm[nm1] + prm[nm1 - 1])
+                    knots.add(t)
+                }
+                in 1..degree - 2 -> knots.add(prm[index])
+                in nm1 - 1..nm1 - degree + 2 -> knots.add(prm[index])
             }
         }
         knots.sort()

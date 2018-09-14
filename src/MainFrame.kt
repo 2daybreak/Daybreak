@@ -18,8 +18,8 @@ class MainFrame : JFrame() {
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         isVisible = true
         contentPane.add(center)
-        contentPane.addKeyListener(KeyHandler())
-        contentPane.requestFocus()
+        //contentPane.addKeyListener(KeyHandler())
+        //contentPane.requestFocus()
 
         menuBar()
         toolBar()

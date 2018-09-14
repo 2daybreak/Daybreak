@@ -68,38 +68,12 @@ abstract class ParametricCurve: Parametric {
      */
     protected abstract fun closestPoint(v: Vector3): Vector3
 
-
-    override fun draw(g: Graphics2D) {
+    fun drawCurve(g: Graphics2D, color: Color) {
         val c = this
-        val size = 10.0
-        val half = size / 2
         val linePerNode = 8
-
-        g.stroke = BasicStroke()
-        //Draw points
-        if (c is InterpolatedBspline || c is InterpolatedNurbs)
-            g.color = Color.YELLOW
-        else
-            g.color = Color.LIGHT_GRAY
-            for (p in c.prm)
-                g.draw(Ellipse2D.Double(c(p).x - half, c(p).y - half, size, size))
-        //Draw control points
-        if (c is InterpolatedBspline || c is InterpolatedNurbs)
-            g.color = Color.LIGHT_GRAY
-        else
-            g.color = Color.YELLOW
-        for (v in c.ctrlPts) g.draw(Ellipse2D.Double(v.x - half, v.y - half, size, size))
-        //Draw control polygon
-        if (c is InterpolatedBspline || c is InterpolatedNurbs)
-            g.color = Color.GRAY
-        else
-            g.color = Color.WHITE
-        for (i in 1 until c.ctrlPts.size) {
-            g.drawLine(c.ctrlPts[i - 1].x.toInt(), c.ctrlPts[i - 1].y.toInt(),
-                    c.ctrlPts[i].x.toInt(), c.ctrlPts[i].y.toInt())
-        }
         //Draw curve (interpolation of pts)
-        g.color = Color.CYAN
+        g.stroke = BasicStroke()
+        g.color = color
         val n = c.ctrlPts.size * linePerNode
         if (c.ctrlPts.size > 1) for (i in 1 until n) {
             val t1 = (i - 1).toDouble() / (n - 1).toDouble()
@@ -123,5 +97,43 @@ abstract class ParametricCurve: Parametric {
                 var p2 = p1 + c(3, t)[i].normalize() * 30 //30 pixels
                 g.drawLine(p1.x.toInt(), p1.y.toInt(), p2.x.toInt(), p2.y.toInt())
             }
+    }
+
+    fun drawPts(g: Graphics2D, color: Color) {
+        val c = this
+        val size = 10.0
+        val half = size / 2
+        g.stroke = BasicStroke()
+        //Draw points
+        if (c is InterpolatedBspline || c is InterpolatedNurbs)
+            g.color = color
+        else
+            g.color = Color.DARK_GRAY
+            for (p in c.prm)
+                g.draw(Ellipse2D.Double(c(p).x - half, c(p).y - half, size, size))
+        //Draw control points
+        for (v in c.ctrlPts)
+            when(c.ctrlPts.indexOf(v)) {
+                0 or c.ctrlPts.size - 1 -> {
+                    g.color = color
+                    g.draw(Ellipse2D.Double(v.x - half, v.y - half, size, size))
+                }
+                else -> {
+                    if (c is InterpolatedBspline || c is InterpolatedNurbs)
+                        g.color = Color.LIGHT_GRAY
+                    else
+                        g.color = color
+                    g.draw(Ellipse2D.Double(v.x - half, v.y - half, size, size))
+                }
+            }
+        //Draw control polygon
+        if (c is InterpolatedBspline || c is InterpolatedNurbs)
+            g.color = Color.DARK_GRAY
+        else
+            g.color = Color.WHITE
+        for (i in 1 until c.ctrlPts.size) {
+            g.drawLine(c.ctrlPts[i - 1].x.toInt(), c.ctrlPts[i - 1].y.toInt(),
+                    c.ctrlPts[i].x.toInt(), c.ctrlPts[i].y.toInt())
+        }
     }
 }

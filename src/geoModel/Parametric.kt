@@ -23,15 +23,34 @@ interface Parametric {
 
     fun removePts(i: Int)
 
+    /**
+     * Assign 1st derivative at the specified parameter
+     *
+     * @param i the index of parameter
+     * @param v the 1st derivative to be specified
+     * @see InterpolatedBspline
+     */
     fun addSlope(i: Int, v: Vector3)
 
+    /**
+     * Modify 1st derivative at the specified parameter
+     *
+     * @param i the index of parameter
+     * @param v the 1st derivative to be specified
+     * @see InterpolatedBspline
+     */
     fun modSlope(i: Int, v: Vector3)
 
+    /**
+     * Remove the derivative at the specified parameter
+     *
+     * @param i the index of parameter
+     * @param v the 1st derivative to be specified
+     * @see InterpolatedBspline
+     */
     fun removeSlope(i: Int)
 
     fun distance(v: Vector3): Double
 
     fun split(t: Double)
-
-    fun draw(g: Graphics2D)
 }

@@ -49,7 +49,7 @@ class MainSplitPane: JSplitPane() {
             override fun mouseClicked(e: MouseEvent) {
                 val row = tree.getRowForLocation(e.x, e.y)
                 val name = tree.getPathForRow(row).toString()
-                if(row != -1) mainPanel.ing = row - beginCurve
+                if(row != -1) mainPanel.iCurve = row - beginCurve
             }
         })
 

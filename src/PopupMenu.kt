@@ -4,6 +4,7 @@ import javax.swing.JPopupMenu
 
 class PopupMenu: JPopupMenu() {
 
+    val edit = JMenuItem("Edit")
     val slope = JMenuItem("Slope")
     val lock = JMenuItem("Lock")
     val unlock = JMenuItem("Unlock")
@@ -15,11 +16,7 @@ class PopupMenu: JPopupMenu() {
     val ctp = JMenuItem("Show Control Points")
 
     init {
-
-        /*slp.addActionListener { e: ActionEvent ->
-            slp.isEnabled = false
-        }*/
-
+        this.add(edit)
         this.add(slope)
         this.add(lock)
         this.add(unlock)

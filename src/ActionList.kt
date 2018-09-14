@@ -18,7 +18,7 @@ class ActionList(text: String, val panel: MainSplitPane, val i: Int) {
                 3 -> Nurbs()
                 else -> InterpolatedNurbs()
             })
-            panel.mainPanel.ing = panel.mainPanel.curve.size - 1
+            panel.mainPanel.iCurve = panel.mainPanel.curve.size - 1
             panel.mainPanel.mode = DrawingPanel.Mode.Curve
             panel.geometry.add(DefaultMutableTreeNode(btm.text))
             panel.model.reload()
@@ -33,7 +33,7 @@ class ActionList(text: String, val panel: MainSplitPane, val i: Int) {
                 3 -> Nurbs()
                 else -> InterpolatedNurbs()
             })
-            panel.mainPanel.ing = panel.mainPanel.curve.size - 1
+            panel.mainPanel.iCurve = panel.mainPanel.curve.size - 1
             panel.mainPanel.mode = DrawingPanel.Mode.Curve
             panel.geometry.add(DefaultMutableTreeNode(itm.text))
             panel.model.reload()
